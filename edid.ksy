@@ -45,12 +45,21 @@ seq:
     type: chromacity_info
     doc: 'Phosphor or filter chromaticity structure, which provides info on colorimetry and white point'
     doc-ref: Standard, section 3.7
-  - id: dmt_support
-    type: dmt_support_info
+  - id: est_timings
+    type: est_timings_info
     doc: |
-      Block of bit flags that indicates support of VESA DMT (Discrete
-      Monitor Timings) modes.
+      Block of bit flags that indicates support of so called
+      "established timings", which is a commonly used subset of VESA
+      DMT (Discrete Monitor Timings) modes.
     doc-ref: Standard, section 3.8
+  - id: std_timings
+    type: std_timing
+    doc: |
+      Array of descriptions of so called "standard timings", which are
+      used to specify up to 8 additional timings not included in
+      "established timings".
+    repeat: expr
+    repeat-expr: 8
 types:
   chromacity_info:
     doc: |
@@ -149,7 +158,7 @@ types:
       white_y:
         value: white_y_int / 1024.0
         doc: White Y coordinate
-  dmt_support_info:
+  est_timings_info:
     seq:
       # Byte 0: "Established Timing I"
       - id: can_720_400_70
@@ -207,6 +216,38 @@ types:
         doc: Supports 1152 x 870 @ 75Hz
       - id: reserved
         type: b7
+  std_timing:
+    seq:
+      - id: horiz_active_pixels_mod
+        type: u1
+        doc: |
+          Range of horizontal active pixels, written in modified form:
+          `(horiz_active_pixels / 8) - 31`. This yields an effective
+          range of 256..2288, with steps of 8 pixels.
+      - id: aspect_ratio
+        type: b2
+        enum: aspect_ratios
+        doc: |
+          Aspect ratio of the image. Can be used to calculate number
+          of vertical pixels.
+      - id: refresh_rate_mod
+        type: b5
+        doc: |
+          Refresh rate in Hz, written in modified form: `refresh_rate
+          - 60`. This yields an effective range of 60..123 Hz.
+    instances:
+      horiz_active_pixels:
+        value: (horiz_active_pixels_mod + 31) * 8
+        doc: Range of horizontal active pixels.
+      refresh_rate:
+        value: refresh_rate_mod + 60
+        doc: Vertical refresh rate, Hz.
+    enums:
+      aspect_ratios:
+        0: ratio_16_10
+        1: ratio_4_3
+        2: ratio_5_4
+        3: ratio_16_9
 instances:
   mfg_id_ch1:
     value: '(mfg_bytes & 0b0111110000000000) >> 10'
