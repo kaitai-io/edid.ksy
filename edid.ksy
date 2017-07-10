@@ -45,6 +45,12 @@ seq:
     type: chromacity_info
     doc: 'Phosphor or filter chromaticity structure, which provides info on colorimetry and white point'
     doc-ref: Standard, section 3.7
+  - id: dmt_support
+    type: dmt_support_info
+    doc: |
+      Block of bit flags that indicates support of VESA DMT (Discrete
+      Monitor Timings) modes.
+    doc-ref: Standard, section 3.8
 types:
   chromacity_info:
     doc: |
@@ -143,6 +149,64 @@ types:
       white_y:
         value: white_y_int / 1024.0
         doc: White Y coordinate
+  dmt_support_info:
+    seq:
+      # Byte 0: "Established Timing I"
+      - id: can_720_400_70
+        type: b1
+        doc: Supports 720 x 400 @ 70Hz
+      - id: can_720_400_88
+        type: b1
+        doc: Supports 720 x 400 @ 88Hz
+      - id: can_640_480_60
+        type: b1
+        doc: Supports 640 x 480 @ 60Hz
+      - id: can_640_480_67
+        type: b1
+        doc: Supports 640 x 480 @ 67Hz
+      - id: can_640_480_72
+        type: b1
+        doc: Supports 640 x 480 @ 72Hz
+      - id: can_640_480_75
+        type: b1
+        doc: Supports 640 x 480 @ 75Hz
+      - id: can_800_600_56
+        type: b1
+        doc: Supports 800 x 600 @ 56Hz
+      - id: can_800_600_60
+        type: b1
+        doc: Supports 800 x 600 @ 60Hz
+      # Byte 1: "Established Timing II"
+      - id: can_800_600_72
+        type: b1
+        doc: Supports 800 x 600 @ 72Hz
+      - id: can_800_600_75
+        type: b1
+        doc: Supports 800 x 600 @ 75Hz
+      - id: can_832_624_75
+        type: b1
+        doc: Supports 832 x 624 @ 75Hz
+      - id: can_1024_768_87_i
+        type: b1
+        doc: Supports 1024 x 768 @ 87Hz(I)
+      - id: can_1024_768_60
+        type: b1
+        doc: Supports 1024 x 768 @ 60Hz
+      - id: can_1024_768_70
+        type: b1
+        doc: Supports 1024 x 768 @ 70Hz
+      - id: can_1024_768_75
+        type: b1
+        doc: Supports 1024 x 768 @ 75Hz
+      - id: can_1280_1024_75
+        type: b1
+        doc: Supports 1280 x 1024 @ 75Hz
+      # Byte 2: "Manufacturer's Timings"
+      - id: can_1152_870_75
+        type: b1
+        doc: Supports 1152 x 870 @ 75Hz
+      - id: reserved
+        type: b7
 instances:
   mfg_id_ch1:
     value: '(mfg_bytes & 0b0111110000000000) >> 10'
